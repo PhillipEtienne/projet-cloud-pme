@@ -6,7 +6,7 @@ Ce dépôt regroupe la documentation, les configurations et les scripts d'automa
 
 ---
 
-## 🎯 Objectifs
+## Objectifs
 
 - Centraliser la gestion des demandes de support informatique
 - Assurer la traçabilité des incidents et interventions
@@ -15,18 +15,20 @@ Ce dépôt regroupe la documentation, les configurations et les scripts d'automa
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 L'infrastructure repose sur deux VPC AWS reliés par **VPC Peering** :
 
 - **VPC Infrastructure** : héberge les serveurs (AD, GLPI, Zabbix, Ansible)
 - **VPC Personnel** : héberge les postes de travail Windows des utilisateurs
 
-> 📌 Voir [`docs/architecture.md`](docs/architecture.md) pour le détail (subnets, groupes de sécurité, ports ouverts, peering).
+  ![Architecture cible](docs/architecture.png)
+
+>  Voir [`docs/architecture.md`](docs/architecture.md) pour le détail (subnets, groupes de sécurité, ports ouverts, peering).
 
 ---
 
-## 🧰 Technologies utilisées
+##  Technologies utilisées
 
 | Catégorie | Outil |
 |---|---|
@@ -40,7 +42,7 @@ L'infrastructure repose sur deux VPC AWS reliés par **VPC Peering** :
 
 ---
 
-## 📁 Structure du dépôt
+## Structure du dépôt
 
 ```
 projet-cloud-pme/
@@ -61,7 +63,7 @@ projet-cloud-pme/
 
 ---
 
-## 🚀 Démarrage rapide
+## Démarrage rapide
 
 Chaque composant a son propre README avec les étapes détaillées :
 
@@ -73,7 +75,7 @@ Chaque composant a son propre README avec les étapes détaillées :
 
 ---
 
-## ⚠️ Sécurité
+## Sécurité
 
 Aucun secret (mot de passe, clé AWS, certificat) n'est versionné dans ce dépôt. Les fichiers sensibles sont fournis sous forme `*.example` et doivent être copiés/adaptés localement. Voir [`.gitignore`](.gitignore) pour la liste des exclusions.
 
@@ -81,12 +83,12 @@ Pour les playbooks Ansible, utiliser **`ansible-vault`** pour chiffrer les ident
 
 ---
 
-## 👤 Auteur
+## Auteur
 
 **Phillip Etienne** — Mastère 2 Expert en Architecture des Systèmes d'Information
 
 ---
 
-## 📄 Licence
+##  Licence
 
 Ce projet est distribué sous licence MIT — voir [`LICENSE`](LICENSE).
