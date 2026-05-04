@@ -1,0 +1,52 @@
+# Secrets et identifiants — NE JAMAIS COMMITER
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+
+# Ansible
+ansible/inventories/inventory.yml
+ansible/inventories/*.yml
+!ansible/inventories/*.example
+ansible/group_vars/**/vault.yml
+!ansible/group_vars/**/vault.yml.example
+*.retry
+.vault_pass
+vault_pass.txt
+
+# AWS
+.aws/
+aws-credentials
+*credentials*
+
+# Sauvegardes BDD
+*.sql
+*.sql.gz
+*.dump
+!**/schema.sql
+
+# Système / éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Python / Node
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
