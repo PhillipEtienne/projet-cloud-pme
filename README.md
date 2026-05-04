@@ -22,7 +22,7 @@ L'infrastructure repose sur deux VPC AWS reliés par **VPC Peering** :
 - **VPC Infrastructure** : héberge les serveurs (AD, GLPI, Zabbix, Ansible)
 - **VPC Personnel** : héberge les postes de travail Windows des utilisateurs
 
-  ![Architecture cible](docs/architecture.png)
+  ![Architecture cible](docs/Architecture.png)
 
 >  Voir [`docs/architecture.md`](docs/architecture.md) pour le détail (subnets, groupes de sécurité, ports ouverts, peering).
 
