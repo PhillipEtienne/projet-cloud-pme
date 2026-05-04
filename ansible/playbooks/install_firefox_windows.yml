@@ -1,0 +1,34 @@
+---
+# =============================================================================
+# Playbook : install_firefox_windows.yml
+# Auteur   : Phillip Etienne - Projet Mastère 2 (POC Cloud PME)
+# Objectif : Déployer Mozilla Firefox sur les postes Windows via Chocolatey
+# Lancement: ansible-playbook -i inventories/inventory.yml \
+#            playbooks/install_firefox_windows.yml --ask-vault-pass
+# =============================================================================
+
+- name: Déploiement de Firefox sur les postes Windows
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+
+    - name: S'assurer que Chocolatey est installé
+      win_chocolatey:
+        name: chocolatey
+        state: present
+
+    - name: Installer Mozilla Firefox
+      win_chocolatey:
+        name: firefox
+        state: present
+      register: firefox_install
+
+    - name: Afficher le résultat de l'installation
+      debug:
+        msg: >-
+          {% if firefox_install.changed %}
+          Firefox a été installé sur {{ inventory_hostname }}
+          {% else %}
+          Firefox était déjà présent sur {{ inventory_hostname }}
+          {% endif %}

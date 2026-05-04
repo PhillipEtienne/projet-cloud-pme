@@ -1,0 +1,92 @@
+---
+# =============================================================================
+# Playbook : audit_conformite_windows.yml
+# Auteur   : Phillip Etienne - Projet Mastère 2 (POC Cloud PME)
+# Objectif : Vérifier l'état de santé et la conformité des postes Windows
+# Lancement: ansible-playbook -i inventories/inventory.yml \
+#            playbooks/audit_conformite_windows.yml --ask-vault-pass
+# =============================================================================
+
+- name: Vérification état de santé et conformité des postes Windows
+  hosts: windows
+  gather_facts: yes
+
+  tasks:
+
+    # ----- 1. Identité du poste --------------------------------------------
+    - name: Afficher le nom du poste
+      debug:
+        msg: "Nom du poste : {{ ansible_hostname }}"
+
+    # ----- 2. Version de Windows -------------------------------------------
+    - name: Afficher la version de Windows
+      debug:
+        msg: "OS : {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    # ----- 3. Espace disque sur C: -----------------------------------------
+    - name: Vérifier l'espace disque (C:)
+      win_shell: |
+        $disk = Get-PSDrive C
+        [math]::Round($disk.Free / 1GB, 0)
+      register: disk_free
+      changed_when: false
+
+    - name: Afficher l'espace disque libre (C:)
+      debug:
+        msg: "Espace libre sur C: {{ disk_free.stdout | trim }} Go"
+
+    # ----- 4. Mémoire RAM disponible ---------------------------------------
+    - name: Vérifier la RAM disponible
+      win_shell: |
+        $os = Get-CimInstance Win32_OperatingSystem
+        [math]::Round($os.FreePhysicalMemory / 1MB, 2)
+      register: ram_free
+      changed_when: false
+
+    - name: Afficher la RAM disponible
+      debug:
+        msg: "RAM disponible : {{ ram_free.stdout | trim }} Go"
+
+    # ----- 5. Utilisation CPU ----------------------------------------------
+    - name: Vérifier l'utilisation CPU actuelle
+      win_shell: |
+        (Get-CimInstance Win32_Processor |
+         Measure-Object -Property LoadPercentage -Average).Average
+      register: cpu_load
+      changed_when: false
+
+    - name: Afficher l'utilisation CPU
+      debug:
+        msg: "Utilisation CPU : {{ cpu_load.stdout | trim }} %"
+
+    # ----- 6. Dernier redémarrage ------------------------------------------
+    - name: Récupérer la date du dernier redémarrage
+      win_shell: |
+        (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+      register: last_boot
+      changed_when: false
+
+    - name: Afficher la date du dernier redémarrage
+      debug:
+        msg: "Dernier redémarrage : {{ last_boot.stdout | trim }}"
+
+    # ----- 7. Service Windows Update ---------------------------------------
+    - name: Vérifier si le service Windows Update est actif
+      win_service:
+        name: wuauserv
+      register: wuauserv_status
+
+    - name: Afficher le statut de Windows Update
+      debug:
+        msg: "Windows Update : {{ wuauserv_status.state }}"
+
+    # ----- 8. Antivirus Windows Defender -----------------------------------
+    - name: Vérifier le statut de l'antivirus Windows Defender
+      win_shell: |
+        (Get-MpComputerStatus).AntivirusEnabled
+      register: defender_status
+      changed_when: false
+
+    - name: Afficher le statut de l'antivirus
+      debug:
+        msg: "Antivirus actif : {{ defender_status.stdout | trim }}"

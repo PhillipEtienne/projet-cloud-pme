@@ -1,0 +1,47 @@
+---
+# =============================================================================
+# Playbook : update_windows.yml (maj_windows.yml)
+# Auteur   : Phillip Etienne - Projet Mastère 2 (POC Cloud PME)
+# Objectif : Rechercher, afficher et appliquer les mises à jour Windows.
+#            Redémarrer si nécessaire.
+# Lancement: ansible-playbook -i inventories/inventory.yml \
+#            playbooks/update_windows.yml --ask-vault-pass
+# =============================================================================
+
+- name: Vérifier et installer les mises à jour Windows si nécessaires
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+
+    - name: Vérifier les mises à jour disponibles
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+        state: searched
+      register: updates_available
+
+    - name: Afficher le nombre de mises à jour trouvées
+      debug:
+        msg: "Poste {{ inventory_hostname }} → {{ updates_available.found_update_count }} mises à jour disponibles"
+
+    - name: Installer les mises à jour si nécessaires
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+        state: installed
+        reboot: no
+      register: updates_installed
+      when: updates_available.found_update_count | int > 0
+
+    - name: Redémarrage si nécessaire
+      win_reboot:
+        msg: "Redémarrage planifié par Ansible suite aux MAJ Windows"
+        pre_reboot_delay: 60
+      when:
+        - updates_installed is defined
+        - updates_installed.reboot_required | default(false)

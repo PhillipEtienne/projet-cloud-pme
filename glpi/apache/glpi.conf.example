@@ -1,0 +1,22 @@
+# =============================================================================
+# Fichier : /etc/apache2/sites-available/glpi.conf
+# A copier en glpi.conf et adapter le ServerName.
+# Le HTTPS sera activé automatiquement par Certbot (--apache).
+# =============================================================================
+
+<VirtualHost *:80>
+    ServerName monprojetglpi.example.com
+    ServerAlias www.monprojetglpi.example.com
+
+    DocumentRoot /var/www/html/glpi/public
+
+    <Directory /var/www/html/glpi/public>
+        Require all granted
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php [QSA,L]
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/glpi_error.log
+    CustomLog ${APACHE_LOG_DIR}/glpi_access.log combined
+</VirtualHost>

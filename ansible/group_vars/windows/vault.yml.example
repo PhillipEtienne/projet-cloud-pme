@@ -1,0 +1,9 @@
+---
+# =============================================================================
+# Fichier : vault.yml.example
+# A copier en vault.yml puis chiffrer avec :
+#   ansible-vault encrypt group_vars/windows/vault.yml
+# =============================================================================
+
+vault_win_user: "Administrateur"
+vault_win_password: "REMPLACER_MOI"
